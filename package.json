@@ -1,0 +1,65 @@
+{
+    "name": "discord-bot-starter",
+    "version": "1.0.0",
+    "description": "Discord bot starter project made with discord.js",
+    "private": true,
+    "keywords": [
+        "starter",
+        "typescript",
+        "discord",
+        "bot"
+    ],
+    "homepage": "https://github.com/hoonsubin/discord-bot-starter",
+    "bugs": {
+        "url": "https://github.com/hoonsubin/discord-bot-starter/issues"
+    },
+    "author": {
+        "name": "Hoon Kim",
+        "url": "https://github.com/hoonsubin"
+    },
+    "funding": {
+        "type": "patreon",
+        "url": "https://www.patreon.com/teamstep"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/hoonsubin/discord-bot-starter.git"
+    },
+    "main": "build/index.js",
+    "scripts": {
+        "start": "yarn run serve",
+        "serve": "yarn run build && NODE_ENV=production node -r dotenv/config ./build/index.js",
+        "dev": "ts-node-dev -r dotenv/config src/index.ts",
+        "build": "tsc --project tsconfig.json",
+        "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
+        "test": "NODE_ENV=test jest --setupFiles dotenv/config --verbose --coverage && eslint '*/**/*.{js,ts,tsx}'",
+        "sandbox": "ts-node -r dotenv/config scripts/sandbox.ts"
+    },
+    "engines": {
+        "node": ">=12.x"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "@types/jest": "^26.0.21",
+        "@types/node": "^14.14.35",
+        "@types/ws": "^7.4.0",
+        "@typescript-eslint/eslint-plugin": "^4.18.0",
+        "@typescript-eslint/parser": "^4.18.0",
+        "eslint": "^7.22.0",
+        "eslint-config-prettier": "^8.1.0",
+        "eslint-plugin-prettier": "^3.3.1",
+        "jest": "^26.6.3",
+        "jest-config": "^26.6.3",
+        "nock": "^13.0.11",
+        "prettier": "^2.2.1",
+        "ts-jest": "^26.5.4",
+        "ts-node-dev": "^1.1.6",
+        "typescript": "^4.2.3"
+    },
+    "dependencies": {
+        "discord.js": "^12.5.1",
+        "dotenv": "^8.2.0",
+        "node": "^15.10.0",
+        "ts-node": "^9.1.1"
+    }
+}
