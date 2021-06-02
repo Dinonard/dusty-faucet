@@ -1,23 +1,28 @@
-import Discord, { Message } from 'discord.js';
+import { Message } from 'discord.js';
+const Discord = require("discord.js");
 
 const TOKEN = process.env.DISCORD_TOKEN;
-const WEBHOOK_CRED = { id: process.env.WEBHOOK_ID, token: process.env.WEBHOOK_TOKEN };
-
+const fs = require("fs");
+const { prefix } = require("./config.json");
 /**
  * the main entry function for running the discord application
  */
 export default async function main() {
-    // if (!TOKEN) throw new Error('Please provide discord bot credentials');
-    // await discordBot(TOKEN);
-
-    if (!WEBHOOK_CRED.id || !WEBHOOK_CRED.token) throw new Error('Please provide discord channel webhook credentials');
-    await webhookIntegration(WEBHOOK_CRED.id, WEBHOOK_CRED.token);
+    if (!TOKEN) throw new Error('Please provide discord bot credentials');
+    await discordBot(TOKEN);
 }
 
 async function discordBot(token: string) {
     // Create an instance of a Discord client app
     const client = new Discord.Client({ fetchAllMembers: true, disableMentions: 'all' });
+    client.commands = new Discord.Collection();
+    client.cooldowns = new Discord.Collection();
+    const commandFolder = fs.readdirSync("./commands");
 
+    for (const file of commandFolder) {
+          const command = require(`./commands/${file}`);
+          client.commands.set(command.name, command);
+      }
     /**
      * The ready event is vital, it means that only _after_ this will your bot start reacting to information
      * received from Discord
@@ -28,24 +33,60 @@ async function discordBot(token: string) {
         console.log(`${applicationInfo.name} has started`);
     });
 
-    client.on('message', async (message: Message) => {
-        const conextChannel = message.channel;
+    client.on("message", (message: Message) => {
+        if (!message.content.startsWith(prefix) || message.author.bot) return;
+        const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const commandName = args.shift()?.toLowerCase();
 
-        if (message.content.startsWith('ping')) {
-            conextChannel.send('pong');
-            //message.author.send('pong');
-        }
-    });
+  const command =client.commands.get(commandName);
+  if (!command) return;
+
+  if (command.args && !args.length) {
+    let reply = `You didn't provide any arguments, ${message.author}!`;
+
+    if (command.usage) {
+      reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
+    }
+
+    return message.channel.send(reply);
+  }
+
+  const { cooldowns } = client;
+
+  if (!cooldowns.has(command.name)) {
+    cooldowns.set(command.name, new Discord.Collection());
+  }
+
+  const now = Date.now();
+  const timestamps = cooldowns.get(command.name);
+  const cooldownAmount = (command.cooldown || 3) * 1000;
+
+  if (timestamps.has(message.author.id)) {
+    const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+
+    if (now < expirationTime) {
+      const timeLeft = (expirationTime - now) / 1000;
+      return message.reply(
+        `please wait ${timeLeft.toFixed(
+          1
+        )} more second(s) before reusing the \`${command.name}\` command.`
+      );
+    }
+  }
+
+  timestamps.set(message.author.id, now);
+  setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+
+  try {
+    command.execute(message, args);
+  } catch (error) {
+    console.error(error);
+    message.reply("there was an error trying to execute that command!");
+  }
+
+
+});
 
     // Log our bot in using the token from https://discord.com/developers/applications
     await client.login(token);
-}
-
-async function webhookIntegration(channelId: string, webhookToken: string) {
-    // Create a discord channel webhook client
-    const webhookClient = new Discord.WebhookClient(channelId, webhookToken);
-
-    console.log('Discord webhook client is ready!');
-
-    webhookClient.send('Discord webhook client is ready!');
 }
