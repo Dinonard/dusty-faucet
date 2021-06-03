@@ -1,16 +1,18 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![allow(clippy::new_without_default)]
+#[macro_use]
+extern crate dotenv_codegen;
 
 use ink_lang as ink;
+extern crate dotenv;
 
 #[ink::contract]
 pub mod plasm_faucet {
 
-    /// amount of PLD to be transfered to caller.
-    static AMOUNT: u128 = 10;
-
     #[ink(storage)]
-    pub struct PlasmFaucet {}
+    pub struct PlasmFaucet {
+        AMOUNT: u128,
+    }
 
     //error types
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
@@ -19,16 +21,18 @@ pub mod plasm_faucet {
         TransferFailed,
         InsufficientFunds,
         BelowSupsistenceThreshold,
+        InvalidAccess,
     }
 
     impl PlasmFaucet {
         /// Create new instance of this contract.
         #[ink(constructor)]
         pub fn new() -> Self {
-            Self {}
+            let AMOUNT: u128 = u128::from_str_radix(dotenv!("AMOUNT"), 10).unwrap_or(50);
+            Self { AMOUNT }
         }
 
-        /// Transfers `AMOUNT` of PLD to caller.
+        /// Transfers `self.AMOUNT` of PLD to caller.
         ///
         /// # Errors
         ///
@@ -37,19 +41,26 @@ pub mod plasm_faucet {
         ///   below the subsistence threshold.
         /// - Panics if transfer fails for any other reason.
         #[ink(message)]
-        pub fn drip(&mut self) {
+        pub fn drip(&mut self, to: AccountId, mnemonic: String) {
+            let MNEMONIC: String = dotenv!("MNEMONIC").to_string();
+
+            // allow only valid access so people can't spam faucet SC
+            if MNEMONIC != mnemonic {
+                panic!("An invalid access to the smart contract has been made. Wrong mnemonic.",)
+            };
+
             ink_env::debug_println(&ink_prelude::format!(
                 "contract balance: {}",
                 self.env().balance()
             ));
 
-            assert!(AMOUNT <= self.env().balance(), "insufficient funds!");
+            assert!(self.AMOUNT <= self.env().balance(), "insufficient funds!");
 
-            match self.env().transfer(self.env().caller(), AMOUNT) {
+            match self.env().transfer(to, self.AMOUNT) {
                 Err(ink_env::Error::BelowSubsistenceThreshold) => {
                     panic!(
                         "requested transfer would have brought contract\
-                    below subsistence thershold!"
+                    below subsistence threshold!"
                     )
                 }
 
@@ -58,8 +69,8 @@ pub mod plasm_faucet {
             }
         }
 
-        /// Asserts that the token amount sent as payment with this call
-        /// is exactly `AMOUNT`. This method will fail otherwise, and the
+        /// Asserts that the token self.amount sent as payment with this call
+        /// is exactly `self.AMOUNT`. This method will fail otherwise, and the
         /// transaction would then be reverted.
         ///
         /// # Note
@@ -72,9 +83,9 @@ pub mod plasm_faucet {
                 ink_prelude::format!("received payment: {}", self.env().transferred_balance());
             ink_env::debug_println(&msg);
             assert!(
-                self.env().transferred_balance() == AMOUNT,
+                self.env().transferred_balance() == self.AMOUNT,
                 "payment was not {}",
-                AMOUNT
+                self.AMOUNT
             );
         }
     }
@@ -82,7 +93,6 @@ pub mod plasm_faucet {
     #[cfg(not(feature = "ink-experimental-engine"))]
     #[cfg(test)]
     mod tests {
-        static AMOUNT: u128 = 10; // ensure same as above
         use super::*;
         use ink_env::{call, test};
         use ink_lang as ink;
@@ -94,11 +104,15 @@ pub mod plasm_faucet {
 
             set_sender(accounts.eve);
             set_balance(accounts.eve, 0);
-            assert_eq!(plasm_faucet.drip(), ());
+            assert_eq!(
+                plasm_faucet.drip(accounts.eve, dotenv!("MNEMONIC").to_string()),
+                ()
+            );
 
-            assert_eq!(get_balance(accounts.eve), AMOUNT);
+            assert_eq!(get_balance(accounts.eve), plasm_faucet.AMOUNT);
         }
 
+        #[ink::test]
         #[should_panic(expected = "insufficient funds!")]
         fn transfer_fails_insufficient_funds() {
             // given
@@ -108,7 +122,25 @@ pub mod plasm_faucet {
 
             // when
             set_sender(accounts.eve);
-            plasm_faucet.drip();
+            plasm_faucet.drip(accounts.eve, dotenv!("MNEMONIC").to_string());
+
+            // then
+            // `plasm_faucet` must already have panicked here
+        }
+
+        #[ink::test]
+        #[should_panic(
+            expected = "An invalid access to the smart contract has been made. Wrong mnemonic."
+        )]
+        fn transfer_fails_wrong_mnemonic() {
+            // given
+            let contract_balance = 1;
+            let accounts = default_accounts();
+            let mut plasm_faucet = create_contract(contract_balance);
+
+            // when
+            set_sender(accounts.eve);
+            plasm_faucet.drip(accounts.eve, "random mnemonic".to_string());
 
             // then
             // `plasm_faucet` must already have panicked here
@@ -126,7 +158,7 @@ pub mod plasm_faucet {
                 0xCA, 0xFE, 0xBA, 0xBE,
             ]));
             data.push_arg(&accounts.eve);
-            let mock_transferred_balance = AMOUNT;
+            let mock_transferred_balance = plasm_faucet.AMOUNT;
 
             // Push the new execution context which sets Eve as caller and
             // the `mock_transferred_balance` as the value which the contract
@@ -145,7 +177,7 @@ pub mod plasm_faucet {
         }
 
         #[ink::test]
-        #[should_panic(expected = "payment was not {}", AMOUNT)]
+        #[should_panic]
         fn test_transferred_value_must_fail() {
             // given
             let accounts = default_accounts();
@@ -157,7 +189,7 @@ pub mod plasm_faucet {
                 0xCA, 0xFE, 0xBA, 0xBE,
             ]));
             data.push_arg(&accounts.eve);
-            let mock_transferred_balance = AMOUNT - 1;
+            let mock_transferred_balance = plasm_faucet.AMOUNT - 1;
 
             // Push the new execution context which sets Eve as caller and
             // the `mock_transferred_balance` as the value which the contract
@@ -236,7 +268,7 @@ pub mod plasm_faucet {
             assert_eq!(plasm_faucet.drip(), Ok(()));
 
             // then
-            assert_eq!(get_balance(accounts.eve), AMOUNT);
+            assert_eq!(get_balance(accounts.eve), self.AMOUNT);
         }
 
         #[ink::test]
@@ -274,7 +306,7 @@ pub mod plasm_faucet {
         }
 
         #[ink::test]
-        #[should_panic(expected = "payment was not {}", AMOUNT)]
+        #[should_panic(expected = "payment was not {}", self.AMOUNT)]
         fn test_transferred_value_must_fail() {
             // given
             let accounts = default_accounts();
