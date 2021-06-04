@@ -9,15 +9,7 @@ This starter is focused on developing a full distributable Discord server bot or
 
 ### Setting Up
 
-Before starting the server, you need to first create a `.env` file with the following variables.
-
-```env
-# used for server bots
-DISCORD_TOKEN=<discord bot token>
-# used for webhook app
-WEBHOOK_ID=<discord channel webhook client id>
-WEBHOOK_TOKEN=<discord channel webhook client token>
-```
+Before starting the server, you need to first create a `.env` file described in the root README.
 
 Next, ensure that you have a usable Discord app on your developer portal.
 If you do not have a Discord app, you can create one from here: <https://discord.com/developers/applications>.

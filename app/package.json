@@ -1,7 +1,7 @@
 {
-    "name": "discord-bot-starter",
+    "name": "discord-bot",
     "version": "1.0.0",
-    "description": "Discord bot starter project made with discord.js",
+    "description": "Discord faucet bot made with discord.js",
     "private": true,
     "keywords": [
         "starter",
@@ -9,21 +9,17 @@
         "discord",
         "bot"
     ],
-    "homepage": "https://github.com/hoonsubin/discord-bot-starter",
+    "homepage": "https://github.com/PlasmNetwork/dusty-faucet",
     "bugs": {
-        "url": "https://github.com/hoonsubin/discord-bot-starter/issues"
+        "url": "https://github.com/PlasmNetwork/dusty-faucetissues"
     },
     "author": {
-        "name": "Hoon Kim",
-        "url": "https://github.com/hoonsubin"
-    },
-    "funding": {
-        "type": "patreon",
-        "url": "https://www.patreon.com/teamstep"
+        "name": "Kentaro Vadney",
+        "url": "https://github.com/VadneyK"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/hoonsubin/discord-bot-starter.git"
+        "url": "https://github.com/PlasmNetwork/dusty-faucet.git"
     },
     "main": "build/index.js",
     "scripts": {
