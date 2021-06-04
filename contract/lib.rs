@@ -1,10 +1,7 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![allow(clippy::new_without_default)]
-#[macro_use]
-extern crate dotenv_codegen;
 
 use ink_lang as ink;
-extern crate dotenv;
 
 #[ink::contract]
 pub mod plasm_faucet {
@@ -12,6 +9,7 @@ pub mod plasm_faucet {
     #[ink(storage)]
     pub struct PlasmFaucet {
         AMOUNT: u128,
+        owner: AccountId,
     }
 
     //error types
@@ -21,15 +19,17 @@ pub mod plasm_faucet {
         TransferFailed,
         InsufficientFunds,
         BelowSupsistenceThreshold,
-        InvalidAccess,
     }
 
     impl PlasmFaucet {
         /// Create new instance of this contract.
         #[ink(constructor)]
         pub fn new() -> Self {
-            let AMOUNT: u128 = u128::from_str_radix(dotenv!("AMOUNT"), 10).unwrap_or(50);
-            Self { AMOUNT }
+            let AMOUNT: u128 = 50;
+            Self {
+                AMOUNT,
+                owner: Self::env().caller(),
+            }
         }
 
         /// Transfers `self.AMOUNT` of PLD to caller.
@@ -41,13 +41,10 @@ pub mod plasm_faucet {
         ///   below the subsistence threshold.
         /// - Panics if transfer fails for any other reason.
         #[ink(message)]
-        pub fn drip(&mut self, to: AccountId, mnemonic: String) {
-            let MNEMONIC: String = dotenv!("MNEMONIC").to_string();
-
-            // allow only valid access so people can't spam faucet SC
-            if MNEMONIC != mnemonic {
-                panic!("An invalid access to the smart contract has been made. Wrong mnemonic.",)
-            };
+        pub fn drip(&mut self, to: AccountId) {
+            if self.env().caller() != self.owner {
+                panic!("This smart contract can only be called by the account that deployed this code, {:?}", self.owner);
+            }
 
             ink_env::debug_println(&ink_prelude::format!(
                 "contract balance: {}",
@@ -100,14 +97,11 @@ pub mod plasm_faucet {
         #[ink::test]
         fn transfer_works() {
             let accounts = default_accounts();
+            set_sender(accounts.eve);
             let mut plasm_faucet = create_contract(100);
 
-            set_sender(accounts.eve);
             set_balance(accounts.eve, 0);
-            assert_eq!(
-                plasm_faucet.drip(accounts.eve, dotenv!("MNEMONIC").to_string()),
-                ()
-            );
+            assert_eq!(plasm_faucet.drip(accounts.eve), ());
 
             assert_eq!(get_balance(accounts.eve), plasm_faucet.AMOUNT);
         }
@@ -118,29 +112,27 @@ pub mod plasm_faucet {
             // given
             let contract_balance = 1;
             let accounts = default_accounts();
+            set_sender(accounts.eve);
             let mut plasm_faucet = create_contract(contract_balance);
 
             // when
-            set_sender(accounts.eve);
-            plasm_faucet.drip(accounts.eve, dotenv!("MNEMONIC").to_string());
+            plasm_faucet.drip(accounts.eve);
 
             // then
             // `plasm_faucet` must already have panicked here
         }
 
         #[ink::test]
-        #[should_panic(
-            expected = "An invalid access to the smart contract has been made. Wrong mnemonic."
-        )]
-        fn transfer_fails_wrong_mnemonic() {
+        #[should_panic]
+        fn transfer_fails_non_owner_call() {
             // given
             let contract_balance = 1;
             let accounts = default_accounts();
             let mut plasm_faucet = create_contract(contract_balance);
 
             // when
-            set_sender(accounts.eve);
-            plasm_faucet.drip(accounts.eve, "random mnemonic".to_string());
+            set_sender(accounts.alice);
+            plasm_faucet.drip(accounts.eve);
 
             // then
             // `plasm_faucet` must already have panicked here

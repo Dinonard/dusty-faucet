@@ -14,10 +14,6 @@ ink_lang = { version = "3.0.0-rc2", git = "https://github.com/paritytech/ink", d
 scale = { package = "parity-scale-codec", version = "2.0", default-features = false, features = ["derive"] }
 scale-info = { version = "0.6", default-features = false, features = ["derive"], optional = true }
 
-#standard rust
-dotenv = "0.15.0"
-dotenv_codegen = "0.15.0"
-
 # Should be removed once bitvecto-rs/bitvec#105 is resolved
 funty = "=1.1.0"
 ink_prelude = { version = "3.0.0-rc2", default-features = false }

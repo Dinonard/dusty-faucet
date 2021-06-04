@@ -20,4 +20,6 @@ WEBHOOK_TOKEN=<discord channel webhook client token>
 ABI=<ABI of smart contract>
 ADDRESS=<address of smart contract>
 AMOUNT=<amount of PLD to be sent to requester>
+####   MNEMONIC of deployment account
+MNEMONIC=<mnemonic of deployment account. used as password to restrict smart contract calls>
 ```
