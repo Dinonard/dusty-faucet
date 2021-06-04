@@ -58,8 +58,13 @@
     },
     "dependencies": {
         "discord.js": "^12.5.1",
-        "dotenv": "8.0.0",
-        "node": "^15.10.0",
-        "ts-node": "^9.1.1"
+        "dotenv": "^8.0.0",
+        "ts-node": "^9.1.1",
+        "@polkadot/api": "^4.12.1",
+        "@polkadot/util-crypto": "^6.6.1",
+        "@polkadot/util": "^6.6.1",
+        "@polkadot/types": "^4.12.1",
+        "@plasm/types": "^4.12.1",
+        "@polkadot/api-contract": "^4.12.1"
     }
 }
