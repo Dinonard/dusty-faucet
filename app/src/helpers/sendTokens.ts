@@ -35,22 +35,20 @@ export const sendTokens = async (args: Array<string>, message: Message) => {
     });
 
     const contract = new ContractPromise(api, ABI, ADDRESS);
-    await contract.tx
-        .drip({ value, gasLimit }, to, MNEMONIC)
-        .signAndSend(faucetPair, ({ status, events, dispatchError }) => {
-            if (dispatchError) {
-                if (dispatchError.isModule) {
-                    // for module errors, we have the section indexed, lookup
-                    const decoded = api.registry.findMetaError(dispatchError.asModule);
-                    const { documentation, name, section } = decoded;
+    await contract.tx.drip({ value, gasLimit }, to).signAndSend(faucetPair, ({ status, events, dispatchError }) => {
+        if (dispatchError) {
+            if (dispatchError.isModule) {
+                // for module errors, we have the section indexed, lookup
+                const decoded = api.registry.findMetaError(dispatchError.asModule);
+                const { documentation, name, section } = decoded;
 
-                    console.log(`${section}.${name}: ${documentation.join(' ')}`);
-                } else {
-                    // Other, CannotLookup, BadOrigin, no extra info
-                    console.log(dispatchError.toString());
-                }
+                console.log(`${section}.${name}: ${documentation.join(' ')}`);
             } else {
-                message.channel.send(`${AMOUNT?.toString()!} PLD sent to ${args[0].toString()!}! Enjoy!`);
+                // Other, CannotLookup, BadOrigin, no extra info
+                console.log(dispatchError.toString());
             }
-        });
+        } else {
+            message.channel.send(`${AMOUNT?.toString()!} PLD sent to ${args[0].toString()!}! Enjoy!`);
+        }
+    });
 };
