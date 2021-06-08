@@ -1,5 +1,6 @@
 {
     "name": "discord-bot",
+    "type": "commonjs",
     "version": "1.0.0",
     "description": "Discord faucet bot made with discord.js",
     "private": true,
@@ -41,6 +42,7 @@
         "@types/ws": "^7.4.0",
         "@typescript-eslint/eslint-plugin": "^4.18.0",
         "@typescript-eslint/parser": "^4.18.0",
+        "dotenv-webpack": "^7.0.3",
         "eslint": "^7.22.0",
         "eslint-config-prettier": "^8.1.0",
         "eslint-plugin-prettier": "^3.3.1",
@@ -53,14 +55,14 @@
         "typescript": "^4.2.3"
     },
     "dependencies": {
+        "@plasm/types": "^4.12.1",
+        "@polkadot/api": "^4.12.1",
+        "@polkadot/api-contract": "^4.12.1",
+        "@polkadot/types": "^4.12.1",
+        "@polkadot/util": "^6.6.1",
+        "@polkadot/util-crypto": "^6.6.1",
         "discord.js": "^12.5.1",
         "dotenv": "^8.0.0",
-        "ts-node": "^9.1.1",
-        "@polkadot/api": "^4.12.1",
-        "@polkadot/util-crypto": "^6.6.1",
-        "@polkadot/util": "^6.6.1",
-        "@polkadot/types": "^4.12.1",
-        "@plasm/types": "^4.12.1",
-        "@polkadot/api-contract": "^4.12.1"
+        "ts-node": "^9.1.1"
     }
 }

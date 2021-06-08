@@ -17,38 +17,40 @@ const AMOUNT = process.env.AMOUNT;
 const ADDRESS: string = process.env.ADDRESS?.toString()!;
 
 export const sendTokens = async (args: Array<string>, message: Message) => {
-    // may need to be GeneralAccountID type
-    const to: string = args[0]!;
-    const keyring = new Keyring({ type: 'sr25519' });
-    const faucetPair = keyring.addFromMnemonic(MNEMONIC);
+    message.channel.send('You sent a token, yay!!!');
 
-    const provider = new WsProvider('wss://rpc.dusty.plasmnet.io');
-    let types, networkPrefix;
+    // // may need to be GeneralAccountID type
+    // const to: string = args[0]!;
+    // const keyring = new Keyring({ type: 'sr25519' });
+    // const faucetPair = keyring.addFromMnemonic(MNEMONIC);
 
-    networkPrefix = 5;
-    types = typeDefs.dustyDefinitions;
-    const api = new ApiPromise({
-        provider,
-        types: {
-            ...(types as RegistryTypes),
-        },
-    });
+    // const provider = new WsProvider('wss://rpc.dusty.plasmnet.io');
+    // let types, networkPrefix;
 
-    const contract = new ContractPromise(api, ABI, ADDRESS);
-    await contract.tx.drip({ value, gasLimit }, to).signAndSend(faucetPair, ({ status, events, dispatchError }) => {
-        if (dispatchError) {
-            if (dispatchError.isModule) {
-                // for module errors, we have the section indexed, lookup
-                const decoded = api.registry.findMetaError(dispatchError.asModule);
-                const { documentation, name, section } = decoded;
+    // networkPrefix = 5;
+    // types = typeDefs.dustyDefinitions;
+    // const api = new ApiPromise({
+    //     provider,
+    //     types: {
+    //         ...(types as RegistryTypes),
+    //     },
+    // });
 
-                console.log(`${section}.${name}: ${documentation.join(' ')}`);
-            } else {
-                // Other, CannotLookup, BadOrigin, no extra info
-                console.log(dispatchError.toString());
-            }
-        } else {
-            message.channel.send(`${AMOUNT?.toString()!} PLD sent to ${args[0].toString()!}! Enjoy!`);
-        }
-    });
+    // const contract = new ContractPromise(api, ABI, ADDRESS);
+    // await contract.tx.drip({ value, gasLimit }, to).signAndSend(faucetPair, ({ status, events, dispatchError }) => {
+    //     if (dispatchError) {
+    //         if (dispatchError.isModule) {
+    //             // for module errors, we have the section indexed, lookup
+    //             const decoded = api.registry.findMetaError(dispatchError.asModule);
+    //             const { documentation, name, section } = decoded;
+
+    //             console.log(`${section}.${name}: ${documentation.join(' ')}`);
+    //         } else {
+    //             // Other, CannotLookup, BadOrigin, no extra info
+    //             console.log(dispatchError.toString());
+    //         }
+    //     } else {
+    //         message.channel.send(`${AMOUNT?.toString()!} PLD sent to ${args[0].toString()!}! Enjoy!`);
+    //     }
+    // });
 };

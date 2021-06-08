@@ -86,8 +86,6 @@ pub mod plasm_faucet {
             );
         }
     }
-
-    #[cfg(not(feature = "ink-experimental-engine"))]
     #[cfg(test)]
     mod tests {
         use super::*;
@@ -238,112 +236,6 @@ pub mod plasm_faucet {
         fn get_balance(account_id: AccountId) -> Balance {
             ink_env::test::get_account_balance::<ink_env::DefaultEnvironment>(account_id)
                 .expect("Cannot set account balance")
-        }
-    }
-
-    #[cfg(feature = "ink-experimental-engine")]
-    #[cfg(test)]
-    mod tests_experimental_engine {
-        use super::*;
-        use ink_lang as ink;
-
-        #[ink::test]
-        fn transfer_works() {
-            // given
-            let contract_balance = 100;
-            let accounts = default_accounts();
-            let mut plasm_faucet = create_contract(contract_balance);
-
-            // when
-            set_sender(accounts.eve);
-            set_balance(accounts.eve, 0);
-            assert_eq!(plasm_faucet.drip(), Ok(()));
-
-            // then
-            assert_eq!(get_balance(accounts.eve), self.AMOUNT);
-        }
-
-        #[ink::test]
-        #[should_panic(expected = "insufficient funds!")]
-        fn transfer_fails_insufficient_funds() {
-            // given
-            let contract_balance = 1;
-            let accounts = default_accounts();
-            let mut plasm_faucet = create_contract(contract_balance);
-
-            // when
-            set_sender(accounts.eve);
-            plasm_faucet.drip();
-
-            // then
-            // `plasm_faucet` must already have panicked here
-        }
-
-        #[ink::test]
-        fn test_transferred_value() {
-            // given
-            let accounts = default_accounts();
-            let plasm_faucet = create_contract(100);
-
-            // when
-            // Push the new execution context which sets Eve as caller and
-            // the `mock_transferred_balance` as the value which the contract
-            // will see as transferred to it.
-            set_sender(accounts.eve);
-            ink_env::test::set_value_transferred::<ink_env::DefaultEnvironment>(10);
-
-            // then
-            // there must be no panic
-            plasm_faucet.was_it_amt();
-        }
-
-        #[ink::test]
-        #[should_panic(expected = "payment was not {}", self.AMOUNT)]
-        fn test_transferred_value_must_fail() {
-            // given
-            let accounts = default_accounts();
-            let plasm_faucet = create_contract(100);
-
-            // when
-            // Push the new execution context which sets Eve as caller and
-            // the `mock_transferred_balance` as the value which the contract
-            // will see as transferred to it.
-            set_sender(accounts.eve);
-            ink_env::test::set_value_transferred::<ink_env::DefaultEnvironment>(13);
-
-            // then
-            plasm_faucet.was_it_amt();
-        }
-
-        /// Creates a new instance of `PlasmFaucet` with `initial_balance`.
-        ///
-        /// Returns the `contract_instance`.
-        fn create_contract(initial_balance: Balance) -> PlasmFaucet {
-            let accounts = default_accounts();
-            set_sender(accounts.alice);
-            set_balance(contract_id(), initial_balance);
-            PlasmFaucet::new()
-        }
-
-        fn contract_id() -> AccountId {
-            ink_env::test::callee::<ink_env::DefaultEnvironment>()
-        }
-
-        fn set_sender(sender: AccountId) {
-            ink_env::test::set_caller::<ink_env::DefaultEnvironment>(sender);
-        }
-
-        fn default_accounts() -> ink_env::test::DefaultAccounts<ink_env::DefaultEnvironment> {
-            ink_env::test::default_accounts::<ink_env::DefaultEnvironment>()
-        }
-
-        fn set_balance(account_id: AccountId, balance: Balance) {
-            ink_env::test::set_account_balance::<ink_env::DefaultEnvironment>(account_id, balance)
-        }
-
-        fn get_balance(account_id: AccountId) -> Balance {
-            ink_env::test::get_account_balance::<ink_env::DefaultEnvironment>(account_id)
-                .expect("Cannot get account balance")
         }
     }
 }

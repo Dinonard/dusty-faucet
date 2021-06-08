@@ -18,6 +18,9 @@
         "strictPropertyInitialization": false,
         "removeComments": true
     },
+    "ts-node": {
+        "transpile-only": true,
+    },
     "lib": [
         "es2015"
     ],

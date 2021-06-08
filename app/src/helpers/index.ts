@@ -1,2 +1,1 @@
-export * as Math from './addNumber';
-export * as Api from './sendTokens'
+export * as Api from './sendTokens';
