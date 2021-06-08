@@ -1,4 +1,4 @@
-# !ink contracts for discord dusty faucet bot
+# ink! contracts for discord dusty faucet bot
 
 build:
 cargo +nightly contract build
