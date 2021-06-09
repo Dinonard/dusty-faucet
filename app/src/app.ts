@@ -1,13 +1,15 @@
 import { Message } from 'discord.js';
 const Discord = require('discord.js');
 
-const TOKEN = process.env.DISCORD_TOKEN;
+//change to process.env.TOKEN or get from set up so we can make code public
+const TOKEN = 'ODQ3MTUwODE3MDMwNzAxMDc3.YK54rg.A9aolY_Q5-FywvBobNDse145fSY';
 const fs = require('fs');
-const { prefix } = require('./config.json');
+const { prefix } = require('../config.json');
 /**
  * the main entry function for running the discord application
  */
 export default async function main() {
+    require('dotenv').config();
     if (!TOKEN) throw new Error('Please provide discord bot credentials');
     await discordBot(TOKEN);
 }
@@ -17,7 +19,7 @@ async function discordBot(token: string) {
     const client = new Discord.Client({ fetchAllMembers: true, disableMentions: 'all' });
     client.commands = new Discord.Collection();
     client.cooldowns = new Discord.Collection();
-    const commandFolder = fs.readdirSync('./commands');
+    const commandFolder = fs.readdirSync('./commands').filter((file: string) => file.endsWith('.js'));
 
     for (const file of commandFolder) {
         const command = require(`./commands/${file}`);
@@ -37,6 +39,7 @@ async function discordBot(token: string) {
         if (!message.content.startsWith(prefix) || message.author.bot) return;
         const args = message.content.slice(prefix.length).trim().split(/ +/);
         const commandName = args.shift()?.toLowerCase();
+        console.log(client.commands.keys());
 
         const command = client.commands.get(commandName);
         if (!command) return;
