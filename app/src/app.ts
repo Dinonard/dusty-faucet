@@ -1,9 +1,13 @@
 import { Message } from 'discord.js';
+import { drip } from './commands/drip';
 const Discord = require('discord.js');
 
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 const TOKEN = process.env.DISCORD_TOKEN;
 const fs = require('fs');
-const { prefix } = require('./config.json');
+const { prefix } = require('../config.json');
 /**
  * the main entry function for running the discord application
  */
@@ -17,36 +21,30 @@ async function discordBot(token: string) {
     const client = new Discord.Client({ fetchAllMembers: true, disableMentions: 'all' });
     client.commands = new Discord.Collection();
     client.cooldowns = new Discord.Collection();
-    const commandFolder = fs.readdirSync('./commands');
 
-    for (const file of commandFolder) {
-        const command = require(`./commands/${file}`);
-        client.commands.set(command.name, command);
-    }
+    const commandFolder = await fs.readdirSync('src/commands');
+    console.log(commandFolder);
+
     /**
      * The ready event is vital, it means that only _after_ this will your bot start reacting to information
      * received from Discord
      */
-    client.on('ready', async () => {
-        const applicationInfo = await client.fetchApplication();
-
-        console.log(`${applicationInfo.name} has started`);
+    client.once('ready', () => {
+        console.log(`Plasm faucet has started`);
     });
+    console.log(prefix);
 
     client.on('message', (message: Message) => {
         if (!message.content.startsWith(prefix) || message.author.bot) return;
         const args = message.content.slice(prefix.length).trim().split(/ +/);
         const commandName = args.shift()?.toLowerCase();
 
-        const command = client.commands.get(commandName);
-        if (!command) return;
+        if (!commandName) return;
 
-        if (command.args && !args.length) {
+        if (!args.length) {
             let reply = `You didn't provide any arguments, ${message.author}!`;
 
-            if (command.usage) {
-                reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
-            }
+            reply += `\nThe proper usage would be: \`${prefix}${commandName} <address> \``;
 
             return message.channel.send(reply);
         }
@@ -56,6 +54,7 @@ async function discordBot(token: string) {
         if (!cooldowns.has(command.name)) {
             cooldowns.set(command.name, new Discord.Collection());
         }
+        console.log('made it');
 
         const now = Date.now();
         const timestamps = cooldowns.get(command.name);
@@ -76,6 +75,7 @@ async function discordBot(token: string) {
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
 
         try {
+            console.log('land ho!');
             command.execute(message, args);
         } catch (error) {
             console.error(error);
