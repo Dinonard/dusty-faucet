@@ -2,7 +2,7 @@ import { Message } from 'discord.js';
 const Discord = require('discord.js');
 
 //change to process.env.TOKEN or get from set up so we can make code public
-const TOKEN = 'ODQ3MTUwODE3MDMwNzAxMDc3.YK54rg.A9aolY_Q5-FywvBobNDse145fSY';
+const TOKEN = process.env.DISCORD_TOKEN;
 const fs = require('fs');
 const { prefix } = require('../config.json');
 /**
@@ -23,6 +23,8 @@ async function discordBot(token: string) {
 
     for (const file of commandFolder) {
         const command = require(`./commands/${file}`);
+        console.log(`command name is ${command.name}`);
+        console.log(command.keys());
         client.commands.set(command.name, command);
     }
     /**

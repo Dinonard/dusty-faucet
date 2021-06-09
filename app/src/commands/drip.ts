@@ -1,10 +1,10 @@
 const helpers = require('../helpers');
 
 class drip {
-    public name: 'drip';
-    public args: 1;
-    public usage: '<dusty address>';
-    public execute(message: any, args: any) {
+    name: 'drip';
+    args: 1;
+    usage: '<dusty address>';
+    execute(message: any, args: any) {
         try {
             helpers.Api.sendTokens(message, args);
         } catch (e) {
