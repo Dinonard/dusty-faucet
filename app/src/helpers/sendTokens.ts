@@ -17,7 +17,7 @@ const AMOUNT = process.env.AMOUNT;
 const ADDRESS: string = process.env.ADDRESS?.toString()!;
 
 export const sendTokens = async (args: Array<string>, message: Message) => {
-    message.channel.send('You sent a token, yay!!!');
+    message.reply('You sent a token, yay!!!');
 
     // // may need to be GeneralAccountID type
     // const to: string = args[0]!;

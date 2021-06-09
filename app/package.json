@@ -25,7 +25,7 @@
     "main": "build/index.js",
     "scripts": {
         "start": "yarn run serve",
-        "serve": "yarn run build && NODE_ENV=production node -r dotenv/config ./build/index.js",
+        "serve": "cd build && yarn run build && NODE_ENV=production node -r dotenv/config ./build/index.js",
         "dev": "ts-node-dev -r dotenv/config src/index.ts",
         "build": "tsc --project tsconfig.json",
         "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",

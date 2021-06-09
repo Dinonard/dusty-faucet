@@ -1,4 +1,5 @@
 import { Message } from 'discord.js';
+import { drip } from './commands/drip';
 const Discord = require('discord.js');
 
 //change to process.env.TOKEN or get from set up so we can make code public
@@ -19,14 +20,10 @@ async function discordBot(token: string) {
     const client = new Discord.Client({ fetchAllMembers: true, disableMentions: 'all' });
     client.commands = new Discord.Collection();
     client.cooldowns = new Discord.Collection();
-    const commandFolder = fs.readdirSync('./commands').filter((file: string) => file.endsWith('.js'));
 
-    for (const file of commandFolder) {
-        const command = require(`./commands/${file}`);
-        console.log(`command name is ${command.name}`);
-        console.log(command.keys());
-        client.commands.set(command.name, command);
-    }
+    const command: drip = new drip();
+    client.commands.set(command.name, command);
+
     /**
      * The ready event is vital, it means that only _after_ this will your bot start reacting to information
      * received from Discord
@@ -41,19 +38,18 @@ async function discordBot(token: string) {
         if (!message.content.startsWith(prefix) || message.author.bot) return;
         const args = message.content.slice(prefix.length).trim().split(/ +/);
         const commandName = args.shift()?.toLowerCase();
-        console.log(client.commands.keys());
 
         const command = client.commands.get(commandName);
         if (!command) return;
 
         if (command.args && !args.length) {
-            let reply = `You didn't provide any arguments, ${message.author}!`;
+            let reply = `You didn't provide any arguments ;(`;
 
             if (command.usage) {
                 reply += `\nThe proper usage would be: \`${prefix}${command.name} ${command.usage}\``;
             }
 
-            return message.channel.send(reply);
+            return message.reply(reply);
         }
 
         const { cooldowns } = client;
@@ -79,9 +75,8 @@ async function discordBot(token: string) {
 
         timestamps.set(message.author.id, now);
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-
         try {
-            command.execute(message, args);
+            command.execute(args, message);
         } catch (error) {
             console.error(error);
             message.reply('there was an error trying to execute that command!');

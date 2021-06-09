@@ -1,9 +1,14 @@
 const helpers = require('../helpers');
 
 class drip {
-    name: 'drip';
-    args: 1;
-    usage: '<dusty address>';
+    constructor() {
+        this.name = 'drip';
+        this.args = 1;
+        this.usage = '<dusty address>';
+    }
+    name = 'drip';
+    args = 1;
+    usage = '<dusty address>';
     execute(message: any, args: any) {
         try {
             helpers.Api.sendTokens(message, args);
