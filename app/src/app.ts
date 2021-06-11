@@ -1,5 +1,5 @@
 import { Message } from 'discord.js';
-import { drip } from './commands/drip';
+import { drip } from './commands/drip.js';
 const Discord = require('discord.js');
 
 //change to process.env.TOKEN or get from set up so we can make code public
