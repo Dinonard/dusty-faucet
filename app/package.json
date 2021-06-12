@@ -1,6 +1,5 @@
 {
     "name": "discord-bot",
-    "type": "commonjs",
     "version": "1.0.0",
     "description": "Discord faucet bot made with discord.js",
     "private": true,

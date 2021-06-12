@@ -17,7 +17,7 @@ const Message = require('discord.js').Message;
 
 const MNEMONIC = process.env.MNEMONIC!;
 const value = 0;
-const gasLimit = 3000n * 100000n;
+const gasLimit = BigInt(3000) * BigInt(100000);
 const AMOUNT = process.env.AMOUNT;
 
 const ADDRESS: string = process.env.ADDRESS?.toString()!;
