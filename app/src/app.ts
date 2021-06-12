@@ -4,7 +4,6 @@ const Discord = require('discord.js');
 
 //change to process.env.TOKEN or get from set up so we can make code public
 const TOKEN = process.env.DISCORD_TOKEN;
-const fs = require('fs');
 const { prefix } = require('../config.json');
 /**
  * the main entry function for running the discord application
