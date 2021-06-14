@@ -1,10 +1,11 @@
-use super::*;
+mod plasm_faucet;
+use plasm_faucet::*;
 use ink_env::{call, test};
 
 /// Creates a new instance of `PlasmFaucet` with `initial_balance`.
 ///
 /// Returns the `contract_instance`.
-fn create_contract(initial_balance: Balance) -> PlasmFaucet {
+pub fn create_contract(initial_balance: Balance) -> PlasmFaucet {
     let accounts = default_accounts();
     set_sender(accounts.alice);
     set_balance(contract_id(), initial_balance);

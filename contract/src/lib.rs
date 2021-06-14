@@ -5,16 +5,15 @@ use ink_lang as ink;
 
 #[ink::contract]
 pub mod plasm_faucet {
-    use chrono::prelude::*;
     #[cfg(not(feature = "ink-as-dependency"))]
-    use ink_storage::{collections::HashMap as StorageHashMap, lazy::Lazy};
+    use ink_storage::collections::HashMap as StorageHashMap;
 
     #[ink(storage)]
     pub struct PlasmFaucet {
-        AMOUNT: u128,
+        amount: u128,
         owner: AccountId,
-        cooldownMap: StorageHashMap<AccountId, u32>,
-        cooldown: u32,
+        cooldown_map: StorageHashMap<AccountId, u64>,
+        cooldown: u64,
     }
 
     //error types
@@ -31,14 +30,14 @@ pub mod plasm_faucet {
         #[ink(constructor)]
         pub fn new() -> Self {
             Self {
-                AMOUNT: 50,
-                cooldownMap: StorageHashMap::new(),
+                amount: 50,
+                cooldown_map: StorageHashMap::new(),
                 cooldown: 5,
                 owner: Self::env().caller(),
             }
         }
 
-        /// Transfers `self.AMOUNT` of PLD to caller.
+        /// Transfers `self.amount` of PLD to caller.
         ///
         /// # Errors
         ///
@@ -49,8 +48,8 @@ pub mod plasm_faucet {
         #[ink(message)]
         pub fn drip(&mut self, to: AccountId) {
             //check cooldown
-            let now = Utc::now().second();
-            let elapsed = now - self.cooldownMap.get(&to).unwrap_or(&now);
+            let now = self.env().block_timestamp();
+            let elapsed = now - self.cooldown_map.get(&to).unwrap_or(&now);
             if elapsed < self.cooldown {
                 panic!(
                     "You must wait {} more seconds before requesting PLD!",
@@ -63,9 +62,9 @@ pub mod plasm_faucet {
                 self.env().balance()
             ));
 
-            assert!(self.AMOUNT <= self.env().balance(), "insufficient funds!");
+            assert!(self.amount <= self.env().balance(), "insufficient funds!");
 
-            match self.env().transfer(to, self.AMOUNT) {
+            match self.env().transfer(to, self.amount) {
                 Err(ink_env::Error::BelowSubsistenceThreshold) => {
                     panic!(
                         "requested transfer would have brought contract\
@@ -75,13 +74,14 @@ pub mod plasm_faucet {
 
                 Err(_) => panic!("transfer failed!"),
                 Ok(_) => {
-                    self.cooldownMap.insert(to, Utc::now().second());
+                    let now = self.env().block_timestamp();
+                    self.cooldown_map.insert(to, now);
                 }
             }
         }
 
         /// Asserts that the token self.amount sent as payment with this call
-        /// is exactly `self.AMOUNT`. This method will fail otherwise, and the
+        /// is exactly `self.amount`. This method will fail otherwise, and the
         /// transaction would then be reverted.
         ///
         /// # Note
@@ -94,9 +94,9 @@ pub mod plasm_faucet {
                 ink_prelude::format!("received payment: {}", self.env().transferred_balance());
             ink_env::debug_println(&msg);
             assert!(
-                self.env().transferred_balance() == self.AMOUNT,
+                self.env().transferred_balance() == self.amount,
                 "payment was not {}",
-                self.AMOUNT
+                self.amount
             );
         }
 
@@ -111,7 +111,7 @@ pub mod plasm_faucet {
 
         pub fn change_amount(&mut self, new_amount: u128) {
             self.check_owner();
-            self.AMOUNT = new_amount;
+            self.amount = new_amount;
         }
 
         pub fn change_owner(&mut self, new_owner: AccountId) {

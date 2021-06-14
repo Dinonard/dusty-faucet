@@ -1,4 +1,5 @@
 mod test_utils;
+use test_utils::*;
 
 use ink_lang as ink;
 

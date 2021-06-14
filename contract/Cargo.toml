@@ -5,11 +5,11 @@ authors = ["Kentaro Vadney <kentaro@stake.co.jp>"]
 edition = "2018"
 
 [dependencies]
-ink_primitives = { version = "^3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-ink_metadata = { version = "^3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false, features = ["derive"], optional = true }
-ink_env = { version = "^3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-ink_storage = { version = "^3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
-ink_lang = { version = "^3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_primitives = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_metadata = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false, features = ["derive"], optional = true }
+ink_env = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_storage = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
+ink_lang = { version = "3.0.0-rc3", git = "https://github.com/paritytech/ink", default-features = false }
 ink_prelude = { version = "3.0.0-rc3", default-features = false }
 
 scale = { package = "parity-scale-codec", version = "2.1", default-features = false, features = ["derive"] }
@@ -18,7 +18,7 @@ chrono = "0.4.19"
 
 [lib]
 name = "plasm_faucet"
-path = "lib.rs"
+path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [features]
