@@ -24,8 +24,7 @@ async function polkadotApi() {
             ...(types as RegistryTypes),
         },
     });
-    await api.isReady;
-    return api;
+    return await api.isReady;
 }
 
 const Discord = require('discord.js');
@@ -33,7 +32,8 @@ const TOKEN = process.env.DISCORD_TOKEN;
 const { prefix } = require('../config.json');
 
 async function discordBot(token: string) {
-    let api = await polkadotApi();
+    //create new Polkadot api instance
+    const api = await polkadotApi();
     // Create an instance of a Discord client app
     const client = new Discord.Client({ fetchAllMembers: true, disableMentions: 'all' });
 
@@ -95,6 +95,7 @@ async function discordBot(token: string) {
         timestamps.set(message.author.id, now);
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
         try {
+            console.log(api);
             command.execute(args, message, api);
         } catch (error) {
             console.error(error);
