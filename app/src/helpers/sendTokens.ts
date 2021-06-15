@@ -30,8 +30,8 @@ export const sendTokens = async (args: Array<string>, message: typeof Message) =
     const keyring = new Keyring({ type: 'sr25519' });
     const faucetPair = keyring.addFromMnemonic(MNEMONIC);
 
-    // const provider = new WsProvider('wss://rpc.plasmnet.io');
-    const provider = new WsProvider('wss://127.0.0.1:9944');
+    const provider = new WsProvider('wss://rpc.dusty.plasmnet.io/');
+    // const provider = new WsProvider('wss://127.0.0.1:9944');
     let types, networkPrefix;
 
     networkPrefix = 5;
