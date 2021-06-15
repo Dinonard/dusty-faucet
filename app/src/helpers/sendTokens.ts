@@ -36,12 +36,14 @@ export const sendTokens = async (args: Array<string>, message: typeof Message) =
 
     networkPrefix = 5;
     types = typeDefs.dustyDefinitions;
-    const api = new ApiPromise({
+    const api = await new ApiPromise({
         provider,
         types: {
             ...(types as RegistryTypes),
         },
     });
+
+    await api.isReady;
 
     const contract = new ContractPromise(api, ABI, ADDRESS);
     await contract.tx.drip({ value, gasLimit }, to).signAndSend(faucetPair, (result: ISubmittableResult) => {
