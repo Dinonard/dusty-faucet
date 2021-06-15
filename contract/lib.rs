@@ -118,24 +118,28 @@ pub mod plasm_faucet {
         }
 
         /// Change the amount of PLD to drip. Only owner can call.
+        #[ink(message)]
         pub fn change_amount(&mut self, new_amount: u128) {
             self.check_owner();
             self.amount = new_amount;
         }
 
         /// Change the owner of the smart contract. Only owner can call.
+        #[ink(message)]
         pub fn change_owner(&mut self, new_owner: AccountId) {
             self.check_owner();
             self.owner = new_owner;
         }
 
         /// Change the cooldown of the smart contract. Only owner can call.
+        #[ink(message)]
         pub fn change_cooldown(&mut self, cooldown: u64) {
             self.check_owner();
             self.cooldown = cooldown;
         }
 
         /// Reset the cooldown map of the smart contract. Only owner can call.
+        #[ink(message)]
         pub fn reset_cooldown(&mut self) {
             self.check_owner();
             self.cooldown_map = StorageHashMap::new();
