@@ -9,6 +9,7 @@ import { WsProvider, Keyring, ApiPromise } from '@polkadot/api';
 // import { createType, GenericAccountId } from '@polkadot/types'; //TODO check input address
 import type { RegistryTypes } from '@polkadot/types/types';
 const typeDefs = require('@plasm/types');
+import type { ISubmittableResult } from '@polkadot/types/types';
 
 import { ContractPromise } from '@polkadot/api-contract';
 // const ContractPromise = require('@polkadot/api-contract').ContractPromise;
@@ -43,18 +44,20 @@ export const sendTokens = async (args: Array<string>, message: typeof Message) =
     });
 
     const contract = new ContractPromise(api, ABI, ADDRESS);
-    await contract.tx.drip({ value, gasLimit }, to).signAndSend(faucetPair, ({ status, events, dispatchError }) => {
-        if (dispatchError) {
+    await contract.tx.drip({ value, gasLimit }, to).signAndSend(faucetPair, (result: ISubmittableResult) => {
+        if (result.isError) {
             message.reply('There was an error in sending PLD ;(');
-            if (dispatchError.isModule) {
+            console.log(result);
+            console.log('\nthe above was the result object\n');
+            if (result.dispatchError?.isModule) {
                 // for module errors, we have the section indexed, lookup
-                const decoded = api.registry.findMetaError(dispatchError.asModule);
+                const decoded = api.registry.findMetaError(result.dispatchError.asModule);
                 const { documentation, name, section } = decoded;
 
                 console.log(`${section}.${name}: ${documentation.join(' ')}`);
             } else {
                 // Other, CannotLookup, BadOrigin, no extra info
-                console.log(dispatchError.toString());
+                console.log(result.dispatchError?.toString());
             }
         } else {
             message.reply(`${AMOUNT?.toString()!} PLD sent to ${args[0].toString()!}! Enjoy!`);
