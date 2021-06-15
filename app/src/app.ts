@@ -95,7 +95,9 @@ async function discordBot(token: string) {
         timestamps.set(message.author.id, now);
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
         try {
-            console.log(api);
+            console.log(api.isReady);
+            console.log(api.registry);
+            console.log('above are the api info before being passed in a function');
             command.execute(args, message, api);
         } catch (error) {
             console.error(error);
