@@ -16,7 +16,7 @@ pub mod plasm_faucet {
         cooldown: u64,
     }
 
-    //error types
+    // error types
     #[derive(Debug, PartialEq, Eq, scale::Encode, scale::Decode)]
     #[cfg_attr(feature = "std", derive(scale_info::TypeInfo))]
     pub enum Error {
@@ -33,6 +33,8 @@ pub mod plasm_faucet {
                 // default units are in femto (10 ^-15) PLD
                 amount: 50 * 10 ^ 15,
                 cooldown_map: StorageHashMap::new(),
+
+                // should wait about 100 blocks for production
                 cooldown: 5,
                 owner: Self::env().caller(),
             }
