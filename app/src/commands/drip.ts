@@ -5,26 +5,17 @@ module.exports = {
     testOnly: true,
     description: 'Send current amount PLD to given address on dusty network!',
     minArgs: 1,
+    maxArgs: 1,
+    SyntaxError: 'Incorrect Usage! Please use `/drip {ARGUMENTS}',
+    cooldown: '3s',
     expectedArgs: '<dusty address>',
-    callback: ({ args }) => {
+    flags: 64, //doesn't seem to do anything
+    callback: (args: any) => {
         try {
-            helpers.Api.sendTokens(message, args, api);
+            //console.log(args);
+            return helpers.Api.sendTokens(args.args);
         } catch (e) {
             console.log('Error connecting to network: {}', e);
         }
     },
 };
-
-class drip {
-    constructor() {
-        this.name = 'drip';
-        this.args = 1;
-        this.usage = '';
-    }
-    name = 'drip';
-    args = 1;
-    usage = '<dusty address>';
-    execute(message: any, args: any, api: any) {}
-}
-
-export { drip };
