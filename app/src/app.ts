@@ -24,7 +24,8 @@ async function polkadotApi() {
             ...(types as RegistryTypes),
         },
     });
-    return await api.isReady;
+    await api.isReady;
+    return api;
 }
 
 const Discord = require('discord.js');
@@ -33,7 +34,7 @@ const { prefix } = require('../config.json');
 
 async function discordBot(token: string) {
     //create new Polkadot api instance
-    const api = await polkadotApi();
+    let api = await polkadotApi();
     // Create an instance of a Discord client app
     const client = new Discord.Client({ fetchAllMembers: true, disableMentions: 'all' });
 

@@ -10,7 +10,8 @@ const AMOUNT = process.env.AMOUNT;
 const ADDRESS: string = process.env.ADDRESS?.toString()!;
 const ABI = require('./metadata.json');
 
-export const sendTokens = async (args: Array<string>, message: typeof Message, api: ApiPromise) => {
+export const sendTokens = async (args: Array<string>, message: typeof Message, api: any) => {
+    console.log(api);
     await api.isReady;
     // may need to be GeneralAccountID type
     const to: string = args[0]!;

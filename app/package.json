@@ -32,7 +32,7 @@
         "sandbox": "ts-node -r dotenv/config scripts/sandbox.ts"
     },
     "engines": {
-        "node": ">=12.x"
+        "node": ">=16.x"
     },
     "license": "MIT",
     "devDependencies": {
