@@ -36,8 +36,7 @@ export const sendTokens = async (args: Array<string>, message: typeof Message) =
     const keyring = new Keyring({ type: 'sr25519' });
     const faucetPair = keyring.addFromMnemonic(MNEMONIC);
     const contract = new ContractPromise(api, ABI, ADDRESS);
-    await contract.tx.drip({ value, gasLimit }, to).signAndSend(faucetPair, (result: ISubmittableResult) => {
-        console.log(result);
+    await contract.tx.drip({ value, gasLimit }, 123).signAndSend(faucetPair, (result: ISubmittableResult) => {
         if (result.isError) {
             message.reply('There was an error in sending PLD ;(');
 
@@ -54,6 +53,7 @@ export const sendTokens = async (args: Array<string>, message: typeof Message) =
             }
         } else {
             message.reply(`${AMOUNT?.toString()!} PLD sent to ${args[0].toString()!}! Enjoy!`);
+            return;
         }
     });
 };

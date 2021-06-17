@@ -30,7 +30,8 @@ pub mod plasm_faucet {
         #[ink(constructor)]
         pub fn new() -> Self {
             Self {
-                amount: 50,
+                // default units are in femto (10 ^-15) PLD
+                amount: 50 * 10 ^ 15,
                 cooldown_map: StorageHashMap::new(),
                 cooldown: 5,
                 owner: Self::env().caller(),
@@ -54,6 +55,7 @@ pub mod plasm_faucet {
                 Some(time) => {
                     let elapsed = now - time;
                     if elapsed < self.cooldown {
+                        ink_env::debug_println!("time not elapsed yet: {}", elapsed);
                         panic!(
                             "You must wait {} more block timestamps before requesting PLD!",
                             elapsed
@@ -63,25 +65,33 @@ pub mod plasm_faucet {
                 None => (),
             }
 
-            // ink_env::debug_println!(
-            //     "{:?}",
-            //     &ink_prelude::format!("contract balance: {}", self.env().balance())
-            // );
+            ink_env::debug_println!(
+                "{:?}",
+                &ink_prelude::format!(
+                    "timestamp cleared: contract balance: {}",
+                    self.env().balance()
+                )
+            );
 
             assert!(self.amount <= self.env().balance(), "insufficient funds!");
 
             match self.env().transfer(to, self.amount) {
                 Err(ink_env::Error::BelowSubsistenceThreshold) => {
+                    ink_env::debug_println!("subsistence error");
                     panic!(
                         "requested transfer would have brought contract\
                     below subsistence threshold!"
-                    )
+                    );
                 }
 
-                Err(_) => panic!("transfer failed!"),
+                Err(_) => {
+                    ink_env::debug_println!("unknown error ;(");
+                    panic!("transfer failed!");
+                }
                 Ok(_) => {
                     let now = self.env().block_timestamp();
                     self.cooldown_map.insert(to, now);
+                    ink_env::debug_println!("YAY we made it!");
                 }
             }
         }
@@ -96,9 +106,9 @@ pub mod plasm_faucet {
         /// allowed to receive value as part of the call.
         #[ink(message, payable, selector = "0xCAFEBABE")]
         pub fn was_it_amt(&self) {
-            // let msg =
-            //     ink_prelude::format!("received payment: {}", self.env().transferred_balance());
-            // ink_env::debug_println!("{:?}", &msg);
+            let msg =
+                ink_prelude::format!("received payment: {}", self.env().transferred_balance());
+            ink_env::debug_println!("{:?}", &msg);
             assert!(
                 self.env().transferred_balance() == self.amount,
                 "payment was not {}",
