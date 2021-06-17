@@ -10,15 +10,31 @@ const AMOUNT = process.env.AMOUNT;
 const ADDRESS: string = process.env.ADDRESS?.toString()!;
 const ABI = require('./metadata.json');
 
-export const sendTokens = async (args: Array<string>, message: typeof Message, api: any) => {
-    console.log(api);
+import type { RegistryTypes } from '@polkadot/types/types';
+const typeDefs = require('@plasm/types');
+// set up polkadot api
+async function polkadotApi() {
+    // const provider = new WsProvider('wss://rpc.dusty.plasmnet.io/');
+    const provider = await new WsProvider('ws://127.0.0.1:9944');
+
+    let types = typeDefs.dustyDefinitions;
+    const api = await new ApiPromise({
+        provider,
+        types: {
+            ...(types as RegistryTypes),
+        },
+    });
     await api.isReady;
+    return api;
+}
+
+export const sendTokens = async (args: Array<string>, message: typeof Message) => {
+    //create new Polkadot api instance
+    let api = await polkadotApi();
     // may need to be GeneralAccountID type
     const to: string = args[0]!;
     const keyring = new Keyring({ type: 'sr25519' });
     const faucetPair = keyring.addFromMnemonic(MNEMONIC);
-
-    console.log(api);
     const contract = new ContractPromise(api, ABI, ADDRESS);
     await contract.tx.drip({ value, gasLimit }, to).signAndSend(faucetPair, (result: ISubmittableResult) => {
         console.log(result);

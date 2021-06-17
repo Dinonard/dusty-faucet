@@ -63,10 +63,10 @@ pub mod plasm_faucet {
                 None => (),
             }
 
-            ink_env::debug_println!(
-                "{:?}",
-                &ink_prelude::format!("contract balance: {}", self.env().balance())
-            );
+            // ink_env::debug_println!(
+            //     "{:?}",
+            //     &ink_prelude::format!("contract balance: {}", self.env().balance())
+            // );
 
             assert!(self.amount <= self.env().balance(), "insufficient funds!");
 
@@ -96,14 +96,14 @@ pub mod plasm_faucet {
         /// allowed to receive value as part of the call.
         #[ink(message, payable, selector = "0xCAFEBABE")]
         pub fn was_it_amt(&self) {
-            let msg =
-                ink_prelude::format!("received payment: {}", self.env().transferred_balance());
-            ink_env::debug_println!("{:?}", &msg);
+            // let msg =
+            //     ink_prelude::format!("received payment: {}", self.env().transferred_balance());
+            // ink_env::debug_println!("{:?}", &msg);
             assert!(
                 self.env().transferred_balance() == self.amount,
                 "payment was not {}",
                 self.amount
-            );
+            )
         }
 
         /// Panic if a non-owner of this smart contract is calling this function.

@@ -9,32 +9,12 @@ export default async function main() {
 
 import { Message } from 'discord.js';
 import { drip } from './commands/drip.js';
-import { WsProvider, ApiPromise } from '@polkadot/api';
-import type { RegistryTypes } from '@polkadot/types/types';
-const typeDefs = require('@plasm/types');
-// set up polkadot api
-async function polkadotApi() {
-    // const provider = new WsProvider('wss://rpc.dusty.plasmnet.io/');
-    const provider = await new WsProvider('ws://127.0.0.1:9944');
-
-    let types = typeDefs.dustyDefinitions;
-    const api = await new ApiPromise({
-        provider,
-        types: {
-            ...(types as RegistryTypes),
-        },
-    });
-    await api.isReady;
-    return api;
-}
 
 const Discord = require('discord.js');
 const TOKEN = process.env.DISCORD_TOKEN;
 const { prefix } = require('../config.json');
 
 async function discordBot(token: string) {
-    //create new Polkadot api instance
-    let api = await polkadotApi();
     // Create an instance of a Discord client app
     const client = new Discord.Client({ fetchAllMembers: true, disableMentions: 'all' });
 
@@ -96,10 +76,7 @@ async function discordBot(token: string) {
         timestamps.set(message.author.id, now);
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
         try {
-            console.log(api.isReady);
-            console.log(api.registry);
-            console.log('above are the api info before being passed in a function');
-            command.execute(args, message, api);
+            command.execute(args, message);
         } catch (error) {
             console.error(error);
             message.reply('there was an error trying to execute that command!');
