@@ -25,12 +25,16 @@ async function polkadotApi() {
     return api;
 }
 
-import { Message } from 'discord.js';
-import { drip } from './commands/drip.js';
-
 const Discord = require('discord.js');
 const TOKEN = process.env.DISCORD_TOKEN;
 const { prefix } = require('../config.json');
+const WOKCommands = require('wokcommands');
+require('dotenv').config();
+
+const guildId = '847152969526804480';
+
+import { Message } from 'discord.js';
+import { drip } from './commands/drip.js';
 
 async function discordBot(token: string) {
     // Create an instance of a Discord client app
@@ -47,8 +51,14 @@ async function discordBot(token: string) {
      * The ready event is vital, it means that only _after_ this will your bot start reacting to information
      * received from Discord
      */
+
     client.on('ready', async () => {
         const applicationInfo = await client.fetchApplication();
+        new WOKCommands(client, {
+            commandsDir: 'commands',
+            testServers: [guildId],
+            showWarns: false,
+        });
 
         console.log(`${applicationInfo.name} has started`);
     });
