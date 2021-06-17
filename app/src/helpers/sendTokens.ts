@@ -1,4 +1,4 @@
-import { WsProvider, Keyring, ApiPromise } from '@polkadot/api';
+import { Keyring } from '@polkadot/api';
 import type { ISubmittableResult } from '@polkadot/types/types';
 import { ContractPromise } from '@polkadot/api-contract';
 
@@ -10,33 +10,14 @@ const AMOUNT = process.env.AMOUNT;
 const ADDRESS: string = process.env.ADDRESS?.toString()!;
 const ABI = require('./metadata.json');
 
-import type { RegistryTypes } from '@polkadot/types/types';
-const typeDefs = require('@plasm/types');
-// set up polkadot api
-async function polkadotApi() {
-    // const provider = new WsProvider('wss://rpc.dusty.plasmnet.io/');
-    const provider = await new WsProvider('ws://127.0.0.1:9944');
-
-    let types = typeDefs.dustyDefinitions;
-    const api = await new ApiPromise({
-        provider,
-        types: {
-            ...(types as RegistryTypes),
-        },
-    });
-    await api.isReady;
-    return api;
-}
-
-export const sendTokens = async (args: Array<string>, message: typeof Message) => {
+export const sendTokens = async (args: Array<string>, message: typeof Message, api: any) => {
     //create new Polkadot api instance
-    let api = await polkadotApi();
     // may need to be GeneralAccountID type
     const to: string = args[0]!;
     const keyring = new Keyring({ type: 'sr25519' });
     const faucetPair = keyring.addFromMnemonic(MNEMONIC);
     const contract = new ContractPromise(api, ABI, ADDRESS);
-    await contract.tx.drip({ value, gasLimit }, 123).signAndSend(faucetPair, (result: ISubmittableResult) => {
+    await contract.tx.drip({ value, gasLimit }, to).signAndSend(faucetPair, (result: ISubmittableResult) => {
         if (result.isError) {
             message.reply('There was an error in sending PLD ;(');
 

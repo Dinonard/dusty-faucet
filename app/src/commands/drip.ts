@@ -9,9 +9,9 @@ class drip {
     name = 'drip';
     args = 1;
     usage = '<dusty address>';
-    execute(message: any, args: any) {
+    execute(message: any, args: any, api: any) {
         try {
-            helpers.Api.sendTokens(message, args);
+            helpers.Api.sendTokens(message, args, api);
         } catch (e) {
             console.log('Error connecting to network: {}', e);
         }

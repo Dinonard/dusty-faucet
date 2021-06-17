@@ -7,6 +7,24 @@ export default async function main() {
     await discordBot(TOKEN);
 }
 
+import type { RegistryTypes } from '@polkadot/types/types';
+const typeDefs = require('@plasm/types');
+import { WsProvider, ApiPromise } from '@polkadot/api';
+// set up polkadot api
+async function polkadotApi() {
+    // const provider = new WsProvider('wss://rpc.dusty.plasmnet.io/');
+    const provider = await new WsProvider('ws://127.0.0.1:9944');
+    let types = typeDefs.dustyDefinitions;
+    const api = await new ApiPromise({
+        provider,
+        types: {
+            ...(types as RegistryTypes),
+        },
+    });
+    await api.isReady;
+    return api;
+}
+
 import { Message } from 'discord.js';
 import { drip } from './commands/drip.js';
 
@@ -17,6 +35,7 @@ const { prefix } = require('../config.json');
 async function discordBot(token: string) {
     // Create an instance of a Discord client app
     const client = new Discord.Client({ fetchAllMembers: true, disableMentions: 'all' });
+    const api = await polkadotApi();
 
     client.commands = new Discord.Collection();
     client.cooldowns = new Discord.Collection();
@@ -76,7 +95,7 @@ async function discordBot(token: string) {
         timestamps.set(message.author.id, now);
         setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
         try {
-            command.execute(args, message);
+            command.execute(args, message, api);
         } catch (error) {
             console.error(error);
             message.reply('there was an error trying to execute that command!');
