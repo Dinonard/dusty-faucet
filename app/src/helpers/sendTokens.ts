@@ -32,15 +32,14 @@ export const sendTokens = async (args: Array<string>) => {
     const api = await polkadotApi();
     //create new Polkadot api instance
     // may need to be GeneralAccountID type
-    console.log(args);
     const to: string = args[0]!;
 
     const keyring = new Keyring({ type: 'sr25519' });
     const faucetPair = keyring.addFromMnemonic(MNEMONIC);
     const contract = new ContractPromise(api, ABI, ADDRESS);
-    let resultText: string = 'transaction not processed ;(';
-    await contract.tx
-        .drip({ value, gasLimit }, to)
+    let resultText: string;
+    return await contract.tx
+        .drip(0, -1, to)
         .signAndSend(faucetPair, (result: ISubmittableResult) => {
             if (result.isError) {
                 resultText = 'There was an error in sending PLD ;(';

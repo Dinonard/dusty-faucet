@@ -10,10 +10,10 @@ module.exports = {
     cooldown: '3s',
     expectedArgs: '<dusty address>',
     flags: 64, //doesn't seem to do anything
-    callback: (args: any) => {
+    callback: async (args: any) => {
         try {
             //console.log(args);
-            return helpers.Api.sendTokens(args.args);
+            return await helpers.Api.sendTokens(args.args);
         } catch (e) {
             console.log('Error connecting to network: {}', e);
         }
