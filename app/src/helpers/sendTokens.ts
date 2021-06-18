@@ -38,7 +38,7 @@ export const sendTokens = async (args: Array<string>) => {
     const faucetPair = keyring.addFromMnemonic(MNEMONIC);
     const contract = new ContractPromise(api, ABI, ADDRESS);
     let resultText: string;
-    return await contract.tx
+    let final = await contract.tx
         .drip(0, -1, to)
         .signAndSend(faucetPair, (result: ISubmittableResult) => {
             if (result.isError) {
@@ -60,4 +60,6 @@ export const sendTokens = async (args: Array<string>) => {
         .then(() => {
             return resultText;
         });
+    console.log(final);
+    return final;
 };

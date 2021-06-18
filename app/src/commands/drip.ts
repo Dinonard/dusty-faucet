@@ -11,11 +11,15 @@ module.exports = {
     expectedArgs: '<dusty address>',
     flags: 64, //doesn't seem to do anything
     callback: async (args: any) => {
+        let res: string;
         try {
             //console.log(args);
-            return await helpers.Api.sendTokens(args.args);
+            res = await helpers.Api.sendTokens(args.args);
         } catch (e) {
             console.log('Error connecting to network: {}', e);
+            res = 'There was an error with sendTokens ;(';
         }
+        console.log(res);
+        return res;
     },
 };
