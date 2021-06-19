@@ -35,7 +35,7 @@ pub mod plasm_faucet {
                 cooldown_map: StorageHashMap::new(),
 
                 // should wait about 100 blocks for production
-                cooldown: 5,
+                cooldown: 100,
                 owner: Self::env().caller(),
             }
         }
