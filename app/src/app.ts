@@ -79,17 +79,15 @@ async function discordBot(token: string) {
             // set up & check cooldown
 
             const { cooldowns } = client;
-
             if (!cooldowns.has(command.name)) {
                 cooldowns.set(command.name, new Discord.Collection());
             }
 
             const now = Date.now();
             const timestamps = cooldowns.get(command.name);
-            const cooldownAmount = (command.cooldown || 3) * 1000; //convert to seconds
 
             if (timestamps.has(message.author.id)) {
-                const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+                const expirationTime = timestamps.get(message.author.id) + command.cooldown;
 
                 if (now < expirationTime) {
                     const timeLeft = (expirationTime - now) / 1000 / 60;
@@ -100,15 +98,11 @@ async function discordBot(token: string) {
                     );
                 }
             }
-
-            timestamps.set(message.author.id, now);
-            setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
-
             // by now, we know that the command must be executed, so we want to instantiate the polkadot.js api
             const api = await polkadotApi();
 
             try {
-                command.execute(args, message, api);
+                command.execute(client, args, message, api);
             } catch (error) {
                 console.error(error);
                 message.reply('there was an error trying to execute that command!');

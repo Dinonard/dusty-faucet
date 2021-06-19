@@ -29,9 +29,10 @@ pub mod plasm_faucet {
         /// Create new instance of this contract.
         #[ink(constructor)]
         pub fn new() -> Self {
+            let base: u128 = 10;
             Self {
                 // default units are in femto (10 ^-15) PLD
-                amount: 50 * 10 ^ 15,
+                amount: 50 * base.pow(15),
                 cooldown_map: StorageHashMap::new(),
 
                 // should wait about 100 blocks for production

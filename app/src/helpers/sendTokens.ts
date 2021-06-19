@@ -9,8 +9,17 @@ const gasLimit = -1;
 const AMOUNT = process.env.AMOUNT;
 const ADDRESS: string = process.env.ADDRESS?.toString()!;
 const ABI = require('./metadata.json');
+import { drip } from '../commands/drip.js';
 
-export const sendTokens = async (args: Array<string>, message: typeof Message, api: any) => {
+const setCooldown = (client: any, message: typeof Message) => {
+    const { cooldowns } = client;
+    const timestamps = cooldowns.get(drip.name);
+    const now = Date.now();
+    timestamps.set(message.author.id, now);
+    setTimeout(() => timestamps.delete(message.author.id), parseInt(process.env.DRIP_COOLDOWN!) * 1000);
+};
+
+export const sendTokens = async (client: any, args: Array<string>, message: typeof Message, api: any) => {
     //create new Polkadot api instance
     // may need to be GeneralAccountID type
     const to: string = args[0]!;
@@ -35,7 +44,7 @@ export const sendTokens = async (args: Array<string>, message: typeof Message, a
                 }
             } else if (result.isFinalized) {
                 message.reply(`${AMOUNT?.toString()!} PLD sent to ${args[0].toString()!}! Enjoy!`);
-                return;
+                setCooldown(client, message);
             }
         });
     } catch (e) {
