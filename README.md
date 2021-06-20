@@ -6,19 +6,21 @@
 
 - docs/: tutorials, etc.
 
+code to deploy here:
+https://github.com/PlasmNetwork/dusty-faucet-deploy
+
 ### Setting Up
 
-Before starting the server, you need to first create a `.env` file with the following variables.
+Before starting the server, you need to first create a `.env` file in the app/build directory with the following variables.
 
 ```env
 # used for server bots
 DISCORD_TOKEN=<discord bot token>
-# used for webhook app
-WEBHOOK_ID=<discord channel webhook client id>
-WEBHOOK_TOKEN=<discord channel webhook client token>
-ABI=<ABI of smart contract>
+
 ADDRESS=<address of smart contract>
 AMOUNT=<amount of PLD to be sent to requester>
 ####   MNEMONIC of deployment account
-MNEMONIC=<mnemonic of deployment account. used as password to restrict smart contract calls>
+MNEMONIC=<mnemonic of deployment account. to give all privlidges to the polkadot.js api when calling the smart contract>
+# cooldown for drip command in seconds
+DRIP_COOLDOWN = "3600"
 ```
