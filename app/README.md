@@ -1,5 +1,9 @@
 # Discord Bot Starter Project
 
+
+## How to Deploy
+
+
 ## About
 
 This is a Discord bot starter project made with [Discord.js](https://discord.js.org/#/docs/main/stable/general/welcome).
