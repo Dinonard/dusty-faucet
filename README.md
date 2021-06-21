@@ -24,3 +24,5 @@ MNEMONIC=<mnemonic of deployment account. to give all privlidges to the polkadot
 # cooldown for drip command in seconds
 DRIP_COOLDOWN = "3600"
 ```
+
+If you deploy a new smart contract that you want to interact with, update the ADDRESS, MNEMONIC, and copy paste the `metadata.json` at `contract/target/ink/metadata.json` to app/build/helpers. This will update the ABI, ADDRESS, and Keys used to sign the contract when interacting with the smart contract via polkadot.js.
