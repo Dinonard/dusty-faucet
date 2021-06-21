@@ -30,4 +30,14 @@ describe('Message Handler', () => {
         handler.messageHandler(message);
         expect(message.reply).toHaveBeenCalledWith('invalid usage. Please check your address!');
     });
+
+    it('correct address should work and lock out', async () => {
+        message.content = '/drip WgKYi43xq3AM3R9giF826vk9YG8eT48aUd6SGWnUqb1c4yX';
+        handler.messageHandler(message);
+        expect(message.reply).toHaveBeenCalledWith('invalid usage. Please check your address!');
+        handler.messageHandler(message);
+        expect(message.reply).toHaveBeenCalledWith(expect.stringContaining('please wait min('));
+        handler.messageHandler(message);
+        expect(message.reply).toHaveBeenCalledWith(expect.stringContaining('please wait min('));
+    });
 });
