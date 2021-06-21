@@ -3,7 +3,6 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,visualstudiocode,yarn
 
 .vscode
-.github
 
 ## contracts ##
 contract/target/
