@@ -28,7 +28,7 @@
         "dev": "ts-node-dev -r dotenv/config src/index.ts",
         "build": "tsc --project tsconfig.json",
         "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
-        "test": "jest",
+        "test": "jest --env=jsdom --setupFiles dotenv/config --verbose --coverage && eslint '*/**/*.{js,ts,tsx}'",
         "sandbox": "ts-node -r dotenv/config scripts/sandbox.ts"
     },
     "transformIgnorePatterns": [

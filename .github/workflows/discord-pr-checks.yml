@@ -1,0 +1,21 @@
+name: Contract PR Checks
+on:
+  pull_request:
+    paths:
+      - "contract/**/*"
+
+jobs:
+  build_contract:
+    name: Build ink Contract
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install modules
+        run: cd app && yarn
+      - name: Run Tests
+        run: yarn test
+      - name: deploy to heroku
+        run: |
+          git add .
+          git commit -m "deploying after successful jest"
+          git push heroku main

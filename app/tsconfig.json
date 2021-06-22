@@ -22,6 +22,6 @@
         "transpile-only": true
     },
     "lib": ["es2015"],
-    "include": ["src/**/*"],
-    "exclude": ["node_modules", "build", "dist", "scripts", "tests"]
+    "include": ["src/**/*", "tests"],
+    "exclude": ["node_modules", "build", "dist", "scripts"]
 }

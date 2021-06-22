@@ -10,7 +10,6 @@ const config: Config.InitialOptions = {
         '^.+\\.(ts|tsx)?$': 'ts-jest',
         '^.+\\.(js|jsx)$': 'babel-jest',
     },
-    transformIgnorePatterns: ['/Users/kentarovadney/Desktop/code/dusty-faucet/app/src/helpers/*'],
     moduleDirectories: ['/src', 'node_modules'],
 };
 export default config;
