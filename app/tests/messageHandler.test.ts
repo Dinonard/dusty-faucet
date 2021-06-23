@@ -1,3 +1,4 @@
+import { Message } from 'discord.js';
 import { messageHandler } from '../src/helpers/messageHandler';
 describe('Message Handler', () => {
     const message = {
@@ -12,7 +13,7 @@ describe('Message Handler', () => {
             id: 'alice',
         },
         reply: () => {},
-    };
+    } as unknown as Message;
 
     it('no arg should error', async () => {
         messageHandler(message);
