@@ -1,8 +1,9 @@
 /**
  * the main entry function for running the discord application
  */
+import { config } from 'dotenv';
+config();
 export default async function main() {
-    require('dotenv').config();
     if (!TOKEN) throw new Error('Please provide discord bot credentials');
     await discordBot(TOKEN);
 }
@@ -10,7 +11,7 @@ export default async function main() {
 import { drip } from './commands/drip.js';
 import { messageHandler } from './helpers/messageHandler.js';
 
-const Discord = require('discord.js');
+import Discord from 'discord.js';
 const TOKEN = process.env.DISCORD_TOKEN;
 export const client = new Discord.Client({ fetchAllMembers: true, disableMentions: 'all' });
 

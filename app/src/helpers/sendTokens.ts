@@ -2,16 +2,16 @@ import { Keyring } from '@polkadot/api';
 import type { ISubmittableResult } from '@polkadot/types/types';
 import { ContractPromise } from '@polkadot/api-contract';
 
-const Message = require('discord.js').Message;
+import { Message as Message } from 'discord.js';
 const MNEMONIC = process.env.MNEMONIC!;
 const value = 0;
 const gasLimit = -1;
 const AMOUNT = process.env.AMOUNT;
 const ADDRESS: string = process.env.ADDRESS?.toString()!;
-const ABI = require('./metadata.json');
+import ABI from './metadata.json';
 import { drip } from '../commands/drip.js';
 
-const setCooldown = (client: any, message: typeof Message) => {
+const setCooldown = (client: any, message: Message) => {
     const { cooldowns } = client;
     const timestamps = cooldowns.get(drip.name);
     const now = Date.now();
@@ -19,7 +19,7 @@ const setCooldown = (client: any, message: typeof Message) => {
     setTimeout(() => timestamps.delete(message.author.id), parseInt(process.env.DRIP_COOLDOWN!) * 1000);
 };
 
-export const sendTokens = async (client: any, args: Array<string>, message: typeof Message, api: any) => {
+export const sendTokens = async (client: any, args: Array<string>, message: Message, api: any) => {
     //create new Polkadot api instance
     // may need to be GeneralAccountID type
     const to: string = args[0]!;

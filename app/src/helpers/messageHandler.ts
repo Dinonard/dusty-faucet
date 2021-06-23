@@ -1,5 +1,5 @@
-const { prefix } = require('../../config.json');
-const Discord = require('discord.js');
+const prefix = '/';
+import Discord, { Message, TextChannel } from 'discord.js';
 
 import type { RegistryTypes } from '@polkadot/types/types';
 import typeDefs from '@plasm/types';
@@ -20,14 +20,9 @@ async function polkadotApi() {
     return api;
 }
 
-export const messageHandler = async (message: {
-    channel: { isText: any; name: any; send: any };
-    content: string;
-    author: { bot: any; id: any };
-    reply: (arg0: string) => void;
-}) => {
+export const messageHandler = async (message: Message) => {
     if (!message.channel.isText) return;
-    if (message.channel.name !== 'faucet') return;
+    if ((message.channel as TextChannel).name !== 'faucet') return;
     if (!message.content.startsWith(prefix) || message.author.bot) return;
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const commandName = args.shift()?.toLowerCase();
@@ -57,8 +52,9 @@ export const messageHandler = async (message: {
     const now = Date.now();
     const timestamps = cooldowns.get(command.name);
 
-    if (timestamps.has(message.author.id)) {
-        const expirationTime = timestamps.get(message.author.id) + command.cooldown;
+    if (timestamps!.has(message.author.id)) {
+        let record = timestamps!.get(message.author.id);
+        const expirationTime = record! + command.cooldown;
 
         if (now < expirationTime) {
             const timeLeft = (expirationTime - now) / 1000 / 60;
@@ -73,7 +69,7 @@ export const messageHandler = async (message: {
     const api = await polkadotApi();
 
     try {
-        command.execute(client, args, message, api);
+        command.execute(client, message, args, api);
     } catch (error) {
         console.error(error);
         message.reply('there was an error trying to execute that command!');

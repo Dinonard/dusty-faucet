@@ -1,3 +1,6 @@
+import { ApiPromise } from '@polkadot/api';
+import { Client, Message } from 'discord.js';
+
 const helpers = require('../helpers');
 
 class drip {
@@ -12,7 +15,7 @@ class drip {
     args = 1;
     usage = '<dusty address>';
     cooldown = parseInt(process.env.DRIP_COOLDOWN!);
-    execute(client: any, message: any, args: any, api: any) {
+    execute(client: Client, message: Message, args: string[], api: ApiPromise) {
         // Deal with command
         if (helpers.Api.sendTokens(client, message, args, api) === 'ok') {
         }
