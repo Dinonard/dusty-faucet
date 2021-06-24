@@ -3,6 +3,9 @@ import type { RegistryTypes } from '@polkadot/types/types';
 import typeDefs from '@plasm/types';
 import { WsProvider, ApiPromise } from '@polkadot/api';
 import { client } from '../app';
+import { commands } from '../app';
+import { cooldowns } from '../app';
+import { Command, Cooldowns } from './command';
 
 const prefix = '/';
 // set up polkadot api
@@ -29,7 +32,7 @@ export const messageHandler = async (message: Message) => {
 
     //error checking
 
-    const command = client.commands.get(commandName);
+    const command: Command = commands.get(commandName!)!;
     if (!command) return;
 
     if (command.args && !args.length) {
@@ -44,10 +47,9 @@ export const messageHandler = async (message: Message) => {
 
     // set up & check cooldown
 
-    const { cooldowns } = client;
     if (!cooldowns.has(command.name)) {
         //NOTE: Please fix this part
-        cooldowns.set(command.name, command);
+        cooldowns.set(command.name, new Map<string, number>());
     }
 
     const now = Date.now();

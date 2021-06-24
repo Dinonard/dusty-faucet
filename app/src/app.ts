@@ -11,19 +11,20 @@ export default async function main() {
 import { drip } from './commands/drip.js';
 import { messageHandler } from './helpers/messageHandler.js';
 
-import Discord from 'discord.js';
+import Discord, { Client, Message } from 'discord.js';
+import { ApiPromise } from '@polkadot/api';
+import { Command, Commands, Cooldowns } from './helpers/command.js';
 const TOKEN = process.env.DISCORD_TOKEN;
 export const client = new Discord.Client({ fetchAllMembers: true, disableMentions: 'all' });
+export let commands: Commands;
+export let cooldowns: Cooldowns;
 
 async function discordBot(token: string) {
     // Create an instance of a Discord client app
 
-    client.commands = new Discord.Collection();
-    client.cooldowns = new Discord.Collection();
-
     // previously set from folder access but failed with commonjs
     const command: drip = new drip();
-    client.commands.set(command.name, command);
+    commands.set(command.name, command);
 
     client.on('ready', async () => {
         const applicationInfo = await client.fetchApplication();
