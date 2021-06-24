@@ -5,11 +5,16 @@ import type { Config } from '@jest/types';
 const config: Config.InitialOptions = {
     testEnvironment: 'node',
     verbose: true,
-    preset: 'ts-jest',
-    transform: {
-        '^.+\\.(ts|tsx)?$': 'ts-jest',
-        '^.+\\.(js|jsx)$': 'babel-jest',
+    preset: 'ts-jest/presets/default-esm',
+    globals: {
+        'ts-jest': {
+            useESM: true,
+        },
     },
-    moduleDirectories: ['/src', 'node_modules'],
+    roots: ['<rootDir>/.'],
+    testMatch: ['**/__tests__/**/*.+(ts|tsx|js)', '**/?(*.)+(spec|test).+(ts|tsx|js)'],
+    transform: {
+        '^.+\\.(ts|tsx)$': 'ts-jest',
+    },
 };
 export default config;

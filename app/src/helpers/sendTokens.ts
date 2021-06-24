@@ -2,7 +2,7 @@ import { Keyring } from '@polkadot/api';
 import type { ISubmittableResult } from '@polkadot/types/types';
 import { ContractPromise } from '@polkadot/api-contract';
 
-import { Message as Message } from 'discord.js';
+import type { Message } from 'discord.js';
 const MNEMONIC = process.env.MNEMONIC!;
 const value = 0;
 const gasLimit = -1;

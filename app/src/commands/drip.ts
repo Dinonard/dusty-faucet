@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
-import { Client, Message } from 'discord.js';
+import type { Client, Message } from 'discord.js';
 
-const helpers = require('../helpers');
+import * as helpers from '../helpers';
 
 class drip {
     // constructor duplicate needed to successfully transpile to commonjs
@@ -17,8 +17,7 @@ class drip {
     cooldown = parseInt(process.env.DRIP_COOLDOWN!);
     execute(client: Client, message: Message, args: string[], api: ApiPromise) {
         // Deal with command
-        if (helpers.Api.sendTokens(client, message, args, api) === 'ok') {
-        }
+        helpers.Api.sendTokens(client, args, message, api);
     }
 }
 

@@ -1,15 +1,15 @@
-const prefix = '/';
-import Discord, { Message, TextChannel } from 'discord.js';
-
+import type { Message, TextChannel } from 'discord.js';
 import type { RegistryTypes } from '@polkadot/types/types';
 import typeDefs from '@plasm/types';
 import { WsProvider, ApiPromise } from '@polkadot/api';
 import { client } from '../app';
+
+const prefix = '/';
 // set up polkadot api
 async function polkadotApi() {
     const provider = new WsProvider('wss://rpc.dusty.plasmnet.io/');
     // const provider = await new WsProvider('ws://127.0.0.1:9944');
-    let types = typeDefs.dustyDefinitions;
+    const types = typeDefs.dustyDefinitions;
     const api = new ApiPromise({
         provider,
         types: {
@@ -46,14 +46,15 @@ export const messageHandler = async (message: Message) => {
 
     const { cooldowns } = client;
     if (!cooldowns.has(command.name)) {
-        cooldowns.set(command.name, new Discord.Collection());
+        //NOTE: Please fix this part
+        cooldowns.set(command.name, command);
     }
 
     const now = Date.now();
     const timestamps = cooldowns.get(command.name);
 
     if (timestamps!.has(message.author.id)) {
-        let record = timestamps!.get(message.author.id);
+        const record = timestamps!.get(message.author.id);
         const expirationTime = record! + command.cooldown;
 
         if (now < expirationTime) {

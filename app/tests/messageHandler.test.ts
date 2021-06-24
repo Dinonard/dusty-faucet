@@ -1,5 +1,7 @@
+import { jest } from '@jest/globals';
 import { Message } from 'discord.js';
 import { messageHandler } from '../src/helpers/messageHandler';
+
 describe('Message Handler', () => {
     const message = {
         channel: {

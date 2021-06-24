@@ -1,27 +1,25 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "esnext",
         "esModuleInterop": true,
-        "target": "es2015",
-        "lib": ["es6"],
+        "target": "esnext",
+        "lib": ["esnext"],
         "moduleResolution": "node",
         "sourceMap": true,
         "outDir": "build",
         "strict": true,
         "rootDir": "src",
+        "baseUrl": ".",
         "resolveJsonModule": true,
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
-        // we set this to false because of TypeORM entity decorators
         "strictPropertyInitialization": false,
-        "removeComments": true,
-        "types": ["jest", "node"],
-        "typeRoots": ["./types", "./node_modules/@types"]
+        "removeComments": true
     },
     "ts-node": {
         "transpile-only": true
     },
-    "lib": ["es2015"],
+    "lib": ["esnext"],
     "include": ["src/**/*"],
     "exclude": ["node_modules", "build", "dist", "scripts", "tests"]
 }
