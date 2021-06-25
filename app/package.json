@@ -22,13 +22,15 @@
         "url": "https://github.com/PlasmNetwork/dusty-faucet.git"
     },
     "main": "build/index.js",
+    "type": "module",
     "scripts": {
         "start": "yarn run serve",
         "serve": "cd build && yarn run build && NODE_ENV=production node -r dotenv/config ./index.js",
         "dev": "ts-node-dev -r dotenv/config src/index.ts",
         "build": "tsc --project tsconfig.json",
         "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
-        "test": "jest --env=jsdom --setupFiles dotenv/config --verbose --coverage && eslint '*/**/*.{js,ts,tsx}'",
+        "lint:check": "eslint '*/**/*.{js,ts,tsx}'",
+        "test": "NODE_OPTIONS=--experimental-vm-modules jest --verbose --coverage",
         "sandbox": "ts-node -r dotenv/config scripts/sandbox.ts"
     },
     "engines": {
@@ -55,12 +57,12 @@
     },
     "dependencies": {
         "@plasm/types": "^1.5.4-3",
-        "@polkadot/api": "^4.14.1",
-        "@polkadot/api-contract": "^4.14.1",
-        "@polkadot/keyring": "^6.8.1",
-        "@polkadot/types": "^4.14.1",
-        "@polkadot/util": "^6.6.1",
-        "@polkadot/util-crypto": "^6.6.1",
+        "@polkadot/api": "^4.15.1",
+        "@polkadot/api-contract": "^4.15.1",
+        "@polkadot/keyring": "^6.9.1",
+        "@polkadot/types": "^4.15.1",
+        "@polkadot/util": "^6.9.1",
+        "@polkadot/util-crypto": "^6.9.1",
         "discord.js": "^12.5.1",
         "dotenv": "^8.0.0",
         "trim-newlines": "^4.0.1"
