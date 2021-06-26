@@ -12,10 +12,11 @@ const config: Config.InitialOptions = {
             useESM: true,
         },
     },
-    roots: ['<rootDir>/tests/'],
+    roots: ['<rootDir>/tests/', '<rootDir>/build/'],
     testMatch: ['**/__tests__/**/*.+(ts|tsx|js)', '**/?(*.)+(spec|test).+(ts|tsx|js)'],
     transform: {
         '^.+\\.(ts|tsx)$': 'ts-jest',
     },
+    setupFiles: ['dotenv/config'],
 };
 export default config;

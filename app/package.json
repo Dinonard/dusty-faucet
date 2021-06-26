@@ -30,7 +30,7 @@
         "build": "tsc --project tsconfig.json",
         "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix",
         "lint:check": "eslint '*/**/*.{js,ts,tsx}'",
-        "test": "NODE_OPTIONS=--experimental-vm-modules jest --verbose --coverage",
+        "test": "NODE_OPTIONS=--experimental-vm-modules jest --verbose --coverage --watchAll --unhandled-rejections=strict",
         "sandbox": "ts-node -r dotenv/config scripts/sandbox.ts"
     },
     "engines": {
@@ -41,6 +41,7 @@
     "devDependencies": {
         "@jest/types": "^27.0.2",
         "@types/jest": "^26.0.23",
+        "@types/ws": "^7.4.5",
         "@typescript-eslint/eslint-plugin": "^4.18.0",
         "@typescript-eslint/parser": "^4.18.0",
         "eslint": "^7.22.0",

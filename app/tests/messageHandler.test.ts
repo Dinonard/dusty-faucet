@@ -1,8 +1,9 @@
 import { jest } from '@jest/globals';
 import { Message } from 'discord.js';
-import { messageHandler } from '../src/helpers/messageHandler';
+import { messageHandler } from '../build/helpers/messageHandler';
 
 describe('Message Handler', () => {
+    process.env.NODE_ENV = 'TEST';
     const message = {
         channel: {
             isText: true,
@@ -15,10 +16,20 @@ describe('Message Handler', () => {
             id: 'alice',
         },
         reply: () => {},
-    } as unknown as Message;
+    } as any as Message;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
 
     it('no arg should error', async () => {
-        messageHandler(message);
+        try {
+            await messageHandler(message).catch((reason: Error) => {
+                console.log(reason);
+            });
+        } catch (error) {
+            console.log(error);
+        }
         expect(message.reply).toHaveBeenCalledWith(`You didn't provide any arguments ;(`);
     });
 

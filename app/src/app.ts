@@ -11,9 +11,8 @@ export default async function main() {
 import { drip } from './commands/drip.js';
 import { messageHandler } from './helpers/messageHandler.js';
 
-import Discord, { Client, Message } from 'discord.js';
-import { ApiPromise } from '@polkadot/api';
-import { Command, Commands, Cooldowns } from './helpers/command.js';
+import Discord from 'discord.js';
+import { Commands, Cooldowns } from './helpers/command.js';
 const TOKEN = process.env.DISCORD_TOKEN;
 export const client = new Discord.Client({ fetchAllMembers: true, disableMentions: 'all' });
 export let commands: Commands;

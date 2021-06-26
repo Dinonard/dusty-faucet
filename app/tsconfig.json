@@ -14,7 +14,8 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "strictPropertyInitialization": false,
-        "removeComments": true
+        "removeComments": true,
+        "noImplicitAny": false
     },
     "lib": ["esnext"],
     "include": ["src/**/*"],

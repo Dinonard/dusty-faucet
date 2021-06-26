@@ -5,7 +5,7 @@ import { WsProvider, ApiPromise } from '@polkadot/api';
 import { client } from '../app';
 import { commands } from '../app';
 import { cooldowns } from '../app';
-import { Command, Cooldowns } from './command';
+import { Command } from './command';
 
 const prefix = '/';
 // set up polkadot api
@@ -19,7 +19,9 @@ async function polkadotApi() {
             ...(types as RegistryTypes),
         },
     });
-    await api.isReady;
+    await api.isReadyOrError.catch((reason) => {
+        console.log(`Failed to initialize polkadot api: {}`, reason);
+    });
     return api;
 }
 
