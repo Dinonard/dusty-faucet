@@ -12,7 +12,7 @@ const typeDefs = require('@plasm/types');
 import { WsProvider, ApiPromise } from '@polkadot/api';
 // set up polkadot api
 async function polkadotApi() {
-    const provider = new WsProvider('wss://rpc.dusty.plasmnet.io/');
+    const provider = new WsProvider('wss://dusty.astar.network/');
     // const provider = await new WsProvider('ws://127.0.0.1:9944');
     let types = typeDefs.dustyDefinitions;
     const api = await new ApiPromise({
